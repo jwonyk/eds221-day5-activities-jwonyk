@@ -48,6 +48,10 @@ ggsave(width = 8, height = 6, here::here("figs", "yearly_tilapia_tot.png"))
 us_csa_imports <- us_tilapia_imports |>
   filter(country %in% c("Ecuador", "Honduras", "Costa Rica", "Mexico"))
 
-ggplot(data = us_csa_imports, )
+ggplot(data = us_csa_imports, aes(x = year, y = tilapia_imports)) +
+  geom_point(aes(color = country))
+
+ggsave(width = 8, height = 6, here::here("figs", "us_csa_imports.jpg"))
+
 ```
 
