@@ -1,0 +1,53 @@
+---
+title: "Wild Data"
+author: "J"
+date: "2025-08-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+library(dplyr)
+library(skimr)
+
+us_tilapia_imports <- read_csv(here::here("data", "us_tilapia_imports.csv"))
+```
+
+```{r}
+summary(us_tilapia_imports)
+names(us_tilapia_imports)
+dim(us_tilapia_imports)
+skim(us_tilapia_imports)
+
+us_tilapia_imports <- us_tilapia_imports %>%
+  pivot_longer(
+    cols = `1992`:`2018`,
+    names_to = "year",
+    values_to = "tilapia_imports"
+  )
+
+class(us_tilapia_imports$year)
+us_tilapia_imports <- us_tilapia_imports %>%
+  mutate(year = as.numeric(year))
+
+yearly_tilapia_tot <- us_tilapia_imports %>%
+  group_by(year) %>%
+  summarize(total_imports = sum(tilapia_imports, na.rm = TRUE))
+
+ggplot(data = yearly_tilapia_tot, aes(x = year, y = total_imports)) +
+  geom_line() +
+  labs(title = "US Tilapia Imports (1992–2018)",
+       x = "Year",
+       y = "Total Imports")
+
+ggsave(width = 8, height = 6, here::here("figs", "yearly_tilapia_tot.png"))
+
+us_csa_imports <- us_tilapia_imports |>
+  filter(country %in% c("Ecuador", "Honduras", "Costa Rica", "Mexico"))
+
+ggplot(data = us_csa_imports, )
+```
+

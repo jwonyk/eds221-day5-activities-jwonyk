@@ -1,0 +1,36 @@
+---
+title: "Runoff Volumes"
+author: "J"
+date: "2025-08-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source(here::here("src", "storm_runoff.R"))
+library(tidyverse)
+library(here)
+
+```
+
+```{r}
+
+# Create sequence of impervious fractions
+IA <- seq(from = 0.6, to = 0.8, by = 0.01)
+A <- 182
+V <- predict_runoff(IA, A)
+
+# Create data frame to bind the sequence of IA together with V
+runoff_data <- data.frame(ImperviousFraction = IA, RunoffVolume = V)
+
+# plot it!
+ggplot(data = runoff_data, aes(x = IA, y = V)) +
+  geom_point(color = "#1E90FF") +
+  geom_line(color = "#FE5A1C") +
+  labs(title = "The volume of stormwater expected for a watershed",
+      x = "Impervious Fraction",
+      y = "Runoff Volume")
+
+ggsave(width = 8, height = 6, here::here("figs", "runoff_volumes.png"))
+```
+
